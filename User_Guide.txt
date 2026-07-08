@@ -1,0 +1,111 @@
+================================================================================
+VISHAL STENO - TEXT TO SPEECH STUDIO v1.0.0
+Bilingual Client Setup & User Guide (English & Hindi)
+================================================================================
+
+This software is a portable offline-ready Text-to-Speech & Video Compiler Studio.
+Follow the guide below in your preferred language to get started.
+
+--------------------------------------------------------------------------------
+PART 1: ENGLISH USER GUIDE
+--------------------------------------------------------------------------------
+
+1. Installation & Setup
+- Right-click the received "Vishal Steno TTS.zip" file and choose "Extract All".
+- Move the extracted "Vishal Steno TTS" folder to any directory of your choice 
+  (e.g., Desktop, C: Drive, or D: Drive).
+- Do NOT move or delete any files inside this folder. The entire folder must be 
+  kept together to run correctly.
+
+2. First-Time Activation
+To register and lock the software to your PC:
+1. Double-click "Vishal Steno.exe" inside the folder to launch it.
+2. A window titled "Software Activation Required" will appear.
+3. Your unique "Machine ID" (e.g., 4D11E74A-6BFD-...) will be shown.
+4. Click the "Copy" button and send this Machine ID to the software creator.
+5. The creator will generate and send you a unique "Product Key".
+6. Paste the Product Key into the field and click "Activate Software".
+7. Once activated, the software will open and run permanently.
+
+3. Script Writing & Dictation Optimization
+- Write or paste your Hindi script inside the "Hindi Script Writing Editor" box.
+- To insert pause punctuation dynamically matching steno dictation standards:
+  - For Female Voice style (Swara Neural): Click "Optimize for Dictation 1".
+  - For Male Voice style (Madhur Neural): Click "Optimize for Dictation 2".
+  - Adjust the "Dictation Interval" slider to specify spacing (e.g., 8, 10, 12 characters).
+  - Shifting the slider will automatically format and re-distribute punctuation marks.
+
+4. Speech Generation & Settings
+- Select either Female or Male Hindi voices from the drop-down.
+- Adjust the "Speed of Speech" slider (ranging from -30% to +30%).
+- Click "Generate Speech".
+  (Note: Premium speech synthesis requires your computer to be connected to the internet).
+- By default, all generated audio is saved directly to your "Desktop".
+- You can play, pause, or seek through the audio using the player panel at the bottom.
+- To change the default save folder, click the "⚙️ Settings" button in the left sidebar, 
+  click "Browse...", select your preferred directory, and click "Save Settings".
+
+5. Exporting MP4 Videos for YouTube
+You can automatically compile a 16:9 HD video matching your speech timeline:
+1. Click "Import Images" to select one or more slideshow images.
+2. Click "Import Pre-Roll" to add an optional Intro clip (audio/video).
+3. Click "Import Post-Roll" to add an optional Outro clip (audio/video).
+4. Once speech is generated, click "Export MP4 Video (16:9)".
+5. Name the file and click Save. The rendering is processed offline using FFmpeg.
+
+--------------------------------------------------------------------------------
+PART 2: हिंदी यूजर गाइड (HINDI USER GUIDE)
+--------------------------------------------------------------------------------
+
+1. इंस्टॉलेशन और सेटअप
+- आपको मिले हुए "Vishal Steno TTS.zip" फोल्डर को राइट-क्लिक करके "Extract All" करें।
+- Extract होने के बाद बने हुए "Vishal Steno TTS" फोल्डर को आप अपने कंप्यूटर पर कहीं भी 
+  (जैसे Desktop, C: Drive, या D: Drive) रख सकते हैं।
+- इस फोल्डर के अंदर से किसी भी फाइल को बाहर न निकालें, पूरा फोल्डर हमेशा एक साथ रहना चाहिए।
+
+2. फर्स्ट-टाइम एक्टिवेशन (सॉफ्टवेयर एक्टिवेट करना)
+सॉफ्टवेयर को पहली बार इस्तेमाल करने के लिए एक बार एक्टिवेट करना होगा:
+1. फोल्डर के अंदर "Vishal Steno.exe" फाइल को डबल-क्लिक करके चालू करें।
+2. स्क्रीन पर "Software Activation Required" का एक बॉक्स खुलेगा।
+3. वहां आपको अपना unique "Machine ID" (जैसे: 4D11E74A-6BFD-...) दिखेगा।
+4. "Copy" button पर क्लिक करें और वह Machine ID क्रिएटर (जिससे आपने सॉफ्टवेयर खरीदा है) को भेजें।
+5. क्रिएटर आपको एक "Product Key" भेजेगा।
+6. उस Product Key को बॉक्स में पेस्ट करें और "Activate Software" पर क्लिक करें।
+7. एक्टिवेशन सफल होते ही सॉफ्टवेयर खुल जाएगा। इसके बाद यह हमेशा बिना किसी रुकावट के चलेगा।
+
+3. स्क्रिप्ट राइटिंग और डिक्टेशन ऑप्टिमाइजेशन (विराम चिन्ह लगाना)
+- "Hindi Script Writing Editor" वाले बड़े बॉक्स में अपना हिंदी का लेख लिखें या पेस्ट करें।
+- लेख में डिक्टेशन के हिसाब से विराम चिन्ह लगाने के लिए:
+  - Female voice के हिसाब से कोमा लगाने के लिए: "Optimize for Dictation 1" पर क्लिक करें।
+  - Male voice के हिसाब से पूर्ण विराम लगाने के लिए: "Optimize for Dictation 2" पर क्लिक करें।
+  - "Dictation Interval" स्लाइडर को खिसका कर आप अक्षरों की दूरी (जैसे: 8, 10, 12 अक्षर) बदल 
+    सकते हैं। स्लाइडर हिलाने पर कोमा/पूर्ण विराम खुद-ब-खुद बदल जाएंगे।
+
+4. स्पीच जनरेशन और सेटिंग्स (आवाज बनाना)
+- "Select Hindi Voice" में से Female (Swara) या Male (Madhur) आवाज चुनें।
+- "Speed of Speech" स्लाइडर से आवाज की स्पीड धीमी (-30%) या तेज (+30%) कर सकते हैं।
+- "Generate Speech" बटन पर क्लिक करें। 
+  (नोट: प्रीमियम आवाज जनरेट करने के लिए आपके कंप्यूटर में इंटरनेट चालू होना चाहिए)।
+- बाय-डिफ़ॉल्ट, सभी जनरेटेड ऑडियो फाइलें आपके "Desktop" पर सेव होंगी।
+- आप प्लेयर के नीचे दिए "Play", "Pause", "Stop" बटन और Volume/Seek बार से इसे सुन सकते हैं।
+- अगर आप डिफॉल्ट सेव होने की जगह बदलना चाहते हैं, तो लेफ्ट साइडबार में "⚙️ Settings" बटन पर 
+  क्लिक करें, "Browse..." करके अपना फोल्डर चुनें और "Save Settings" पर क्लिक करें।
+
+5. यूट्यूब के लिए वीडियो (MP4) बनाना
+आप इस सॉफ्टवेयर से सीधे यूट्यूब के लिए 16:9 साइज का HD वीडियो भी बना सकते हैं:
+1. "Import Images" पर क्लिक करके एक या एक से ज्यादा फोटो सेलेक्ट करें। ये फोटो वीडियो में 
+   बिना खिंचे (crop होकर) पूरी स्क्रीन पर बराबर समय के लिए फैल जाएंगी।
+2. "Import Pre-Roll (Intro)" पर क्लिक करके आप वीडियो के शुरू में बजने वाला डिस्क्लेमर/इंट्रो 
+   (ऑडियो या वीडियो क्लिप) जोड़ सकते हैं।
+3. "Import Post-Roll (Outro)" पर क्लिक करके वीडियो के अंत में बजने वाला आउट्रो जोड़ सकते हैं।
+4. ऑडियो जनरेट होने के बाद "Export MP4 Video (16:9)" बटन अनलॉक हो जाएगा।
+5. इस पर क्लिक करें, नाम सेव करें। वीडियो बैकग्राउंड में चुपचाप बन जाएगी और सफल होने का 
+   मैसेज आ जाएगा।
+
+--------------------------------------------------------------------------------
+⚠️ SYSTEM REQUIREMENTS (सिस्टम आवश्यकताएं)
+--------------------------------------------------------------------------------
+- OS: Windows 10 / Windows 11 (64-bit).
+- Internet connection is required for Speech Generation.
+- Video Compilation and trimming works 100% offline.
+================================================================================

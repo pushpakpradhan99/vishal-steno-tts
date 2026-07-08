@@ -38,11 +38,13 @@ def build_app():
         print(f"Error: Build directory {dist_dir} was not created!")
         sys.exit(1)
 
-    print("Copying gui.py, version.json and app_icon.png...")
+    print("Copying gui.py, version.json, app_icon.png and User_Guide.txt...")
     shutil.copy("gui.py", os.path.join(dist_dir, "gui.py"))
     shutil.copy("version.json", os.path.join(dist_dir, "version.json"))
     if os.path.exists("app_icon.png"):
         shutil.copy("app_icon.png", os.path.join(dist_dir, "app_icon.png"))
+    if os.path.exists("User_Guide.txt"):
+        shutil.copy("User_Guide.txt", os.path.join(dist_dir, "User_Guide.txt"))
 
     print("Copying FFmpeg binaries...")
     ffmpeg_target_dir = os.path.join(dist_dir, "ffmpeg")
