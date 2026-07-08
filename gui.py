@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import json
 import asyncio
 import tempfile
 import traceback
@@ -31,6 +32,43 @@ if os.path.exists(ffmpeg_dir):
 creationflags = 0
 if os.name == 'nt':
     creationflags = subprocess.CREATE_NO_WINDOW # 0x08000000
+
+# ==============================================================================
+# SETTINGS PERSISTENCE CONTROL (DESKTOP BY DEFAULT)
+# ==============================================================================
+
+def get_settings_file():
+    db_dir = os.path.join(app_dir, "database")
+    os.makedirs(db_dir, exist_ok=True)
+    return os.path.join(db_dir, "settings.json")
+
+def load_save_directory():
+    settings_file = get_settings_file()
+    default_dir = os.path.join(os.path.expanduser("~"), "Desktop")
+    if not os.path.exists(default_dir):
+        default_dir = app_dir # Fallback
+    
+    if os.path.exists(settings_file):
+        try:
+            with open(settings_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                custom_dir = data.get("default_save_dir")
+                if custom_dir and os.path.exists(custom_dir):
+                    return custom_dir
+        except Exception:
+            pass
+    return default_dir
+
+def save_save_directory(custom_dir):
+    settings_file = get_settings_file()
+    try:
+        data = {"default_save_dir": custom_dir}
+        with open(settings_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Failed to save settings: {e}")
+        return False
 
 # ==============================================================================
 # CRYPTOGRAPHIC OFFLINE LICENSING CONTROL (RSA PUBLIC KEY ONLY)
@@ -541,6 +579,15 @@ class MainWindow(QMainWindow):
         header_layout.addLayout(text_brand_layout)
         sidebar_layout.addLayout(header_layout)
 
+        # Settings Configuration Row (Below header, above voice settings)
+        settings_row_layout = QHBoxLayout()
+        self.settings_btn = QPushButton("⚙️ Settings", self)
+        self.settings_btn.setStyleSheet("margin-top: 5px;")
+        self.settings_btn.clicked.connect(self.open_settings)
+        settings_row_layout.addWidget(self.settings_btn)
+        settings_row_layout.addStretch()
+        sidebar_layout.addLayout(settings_row_layout)
+
         # Divider
         divider = QFrame()
         divider.setFrameShape(QFrame.HLine)
@@ -820,6 +867,74 @@ class MainWindow(QMainWindow):
         self.media_player.durationChanged.connect(self.on_duration_changed)
 
     # ==============================================================================
+    # SETTINGS CONFIGURATION DIALOG
+    # ==============================================================================
+
+    def open_settings(self):
+        from PySide6.QtWidgets import QDialog, QLineEdit
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Application Settings")
+        dialog.setMinimumSize(450, 180)
+        dialog.setStyleSheet(DARK_STYLESHEET)
+        
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(12)
+        
+        title = QLabel("Settings & Customizations", dialog)
+        title.setStyleSheet("font-weight: 800; font-size: 15px; color: #66fcf1; letter-spacing: 0.5px;")
+        layout.addWidget(title)
+        
+        desc = QLabel("Set your default save location for generated audios and compiled videos.", dialog)
+        desc.setStyleSheet("color: #85929E; font-size: 12px;")
+        layout.addWidget(desc)
+        
+        path_layout = QHBoxLayout()
+        path_label = QLabel("Save Location:", dialog)
+        path_label.setStyleSheet("font-weight: bold; color: #c5c6c7;")
+        
+        current_dir = load_save_directory()
+        path_input = QLineEdit(current_dir, dialog)
+        path_input.setReadOnly(True)
+        path_input.setStyleSheet("background-color: #0b0c10; border: 1px solid #2f3e46; padding: 5px; color: #ffffff; font-family: monospace;")
+        
+        def browse_folder():
+            selected = QFileDialog.getExistingDirectory(dialog, "Select Save Location", path_input.text())
+            if selected:
+                path_input.setText(selected)
+                
+        browse_btn = QPushButton("Browse...", dialog)
+        browse_btn.clicked.connect(browse_folder)
+        
+        path_layout.addWidget(path_label)
+        path_layout.addWidget(path_input)
+        path_layout.addWidget(browse_btn)
+        layout.addLayout(path_layout)
+        
+        btn_layout = QHBoxLayout()
+        save_btn = QPushButton("Save Settings", dialog)
+        save_btn.setObjectName("generate_btn")
+        
+        def save_and_close():
+            new_dir = path_input.text().strip()
+            if os.path.exists(new_dir):
+                if save_save_directory(new_dir):
+                    QMessageBox.information(dialog, "Success", "Default save location updated successfully!")
+                    dialog.accept()
+                else:
+                    QMessageBox.critical(dialog, "Error", "Failed to save settings file.")
+            else:
+                QMessageBox.warning(dialog, "Invalid Directory", "The selected directory does not exist.")
+                
+        save_btn.clicked.connect(save_and_close)
+        btn_layout.addStretch()
+        btn_layout.addWidget(save_btn)
+        layout.addLayout(btn_layout)
+        
+        dialog.exec()
+
+    # ==============================================================================
     # HANDLERS & SLOTS
     # ==============================================================================
 
@@ -863,15 +978,12 @@ class MainWindow(QMainWindow):
         self.is_optimizing = False
 
     def auto_save_audio(self, temp_path):
-        """Saves generated speech to the Downloads folder sequentially using a persistent database counter."""
+        """Saves generated speech to the configured save folder sequentially."""
         try:
-            downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-            if not os.path.exists(downloads_dir):
-                downloads_dir = app_dir
-            
+            save_dir = load_save_directory()
             counter = get_next_counter()
             filename = f"vishal_steno{counter}.mp3"
-            dst_path = os.path.join(downloads_dir, filename)
+            dst_path = os.path.join(save_dir, filename)
                 
             shutil.copy(temp_path, dst_path)
             increment_counter()
@@ -914,7 +1026,7 @@ class MainWindow(QMainWindow):
         saved_path, filename = self.auto_save_audio(out_path)
         
         if saved_path:
-            self.status_label.setText(f"Status: Success! Saved to Downloads as '{filename}'")
+            self.status_label.setText(f"Status: Success! Saved to configured directory as '{filename}'")
             self.status_label.setStyleSheet("color: #10b981;")
         else:
             self.status_label.setText("Status: Speech generated successfully.")
@@ -1001,11 +1113,13 @@ class MainWindow(QMainWindow):
         if not self.generated_file or not os.path.exists(self.generated_file):
             return
             
+        save_dir = load_save_directory()
         counter = get_next_counter()
         default_video_name = f"vishal_steno{counter}.mp4"
+        default_path = os.path.join(save_dir, default_video_name)
         
         file_path, _ = QFileDialog.getSaveFileName(
-            self, "Export MP4 Video", default_video_name, "Video Files (*.mp4);;All Files (*)"
+            self, "Export MP4 Video", default_path, "Video Files (*.mp4);;All Files (*)"
         )
         if not file_path:
             return
@@ -1092,11 +1206,13 @@ class MainWindow(QMainWindow):
         if not self.generated_file or not os.path.exists(self.generated_file):
             return
         
+        save_dir = load_save_directory()
         counter = get_next_counter()
         default_audio_name = f"vishal_steno{counter}.mp3"
+        default_path = os.path.join(save_dir, default_audio_name)
         
         file_path, _ = QFileDialog.getSaveFileName(
-            self, "Save Audio", default_audio_name, "Audio Files (*.mp3);;All Files (*)"
+            self, "Save Audio", default_path, "Audio Files (*.mp3);;All Files (*)"
         )
         if file_path:
             try:
