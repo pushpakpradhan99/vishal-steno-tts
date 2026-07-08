@@ -9,6 +9,7 @@ import subprocess
 import shutil
 import hashlib
 import base64
+import urllib.request
 from PySide6.QtCore import QThread, Signal, Slot, Qt, QUrl, QTimer
 from PySide6.QtGui import QIcon, QFont, QColor, QPixmap
 from PySide6.QtWidgets import (
@@ -69,6 +70,33 @@ def save_save_directory(custom_dir):
     except Exception as e:
         print(f"Failed to save settings: {e}")
         return False
+
+# ==============================================================================
+# AUTO-UPDATE APP_ICON LOGIC FOR EXISTING CLIENTS
+# ==============================================================================
+
+def check_and_update_icon_locally():
+    """If client has old/missing app_icon.png, download the new compressed logo from GitHub."""
+    icon_path = os.path.join(app_dir, "app_icon.png")
+    github_icon_url = "https://raw.githubusercontent.com/pushpakpradhan99/vishal-steno-tts/main/app_icon.png"
+    target_size = 242826 # Exact byte size of the compressed transparent logo
+    
+    try:
+        needs_download = True
+        if os.path.exists(icon_path):
+            if os.path.getsize(icon_path) == target_size:
+                needs_download = False
+                
+        if needs_download:
+            print("Client has old/missing icon. Auto-downloading new logo from GitHub...")
+            with urllib.request.urlopen(github_icon_url, timeout=5) as response:
+                if response.status == 200:
+                    data = response.read()
+                    with open(icon_path, "wb") as f:
+                        f.write(data)
+                    print("App icon successfully auto-updated locally!")
+    except Exception as e:
+        print(f"Non-blocking update icon error: {e}")
 
 # ==============================================================================
 # CRYPTOGRAPHIC OFFLINE LICENSING CONTROL (RSA PUBLIC KEY ONLY)
@@ -963,7 +991,6 @@ class MainWindow(QMainWindow):
         if not text.strip():
             return
         
-        self.current_optimization = punc
         self.is_optimizing = True
         
         if punc == ",":
@@ -1280,6 +1307,9 @@ def optimize_text(text, punc, N):
     return "".join(result)
 
 def run_app():
+    # Sync and update app_icon.png from GitHub locally on start!
+    check_and_update_icon_locally()
+
     app = QApplication(sys.argv)
     
     # Check Product Key License before opening
@@ -1298,7 +1328,7 @@ def run_app():
             dialog.setWindowIcon(QIcon(icon_path))
             
         layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setMargins(20) # Compatibility for PySide6
         layout.setSpacing(12)
         
         title = QLabel("Activate Vishal Steno Speech Studio", dialog)
