@@ -15,12 +15,13 @@ ffmpeg_dir = os.path.join(app_dir, 'ffmpeg')
 if os.path.exists(ffmpeg_dir):
     os.environ["PATH"] += os.pathsep + ffmpeg_dir
 
-# Configuration URLs - The user can edit these values once their repo is set up!
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/pushpakpradhan99/vishal-steno-tts/main/version.json"
 GITHUB_GUI_URL = "https://raw.githubusercontent.com/pushpakpradhan99/vishal-steno-tts/main/gui.py"
+GITHUB_ICON_URL = "https://raw.githubusercontent.com/pushpakpradhan99/vishal-steno-tts/main/app_icon.png"
 
 LOCAL_VERSION_FILE = os.path.join(app_dir, "version.json")
 LOCAL_GUI_FILE = os.path.join(app_dir, "gui.py")
+LOCAL_ICON_FILE = os.path.join(app_dir, "app_icon.png")
 
 # ==============================================================================
 # STATIC ANALYZER DEPENDENCY IMPORT TRICK
@@ -78,9 +79,20 @@ def check_for_updates():
                             gui_code = gui_resp.read()
                             with open(LOCAL_GUI_FILE, "wb") as f_gui:
                                 f_gui.write(gui_code)
-                            save_local_version(remote_ver)
-                            print("Application updated successfully!")
-                            return True
+                    
+                    # Download the updated app_icon.png
+                    try:
+                        with urllib.request.urlopen(GITHUB_ICON_URL, timeout=5) as icon_resp:
+                            if icon_resp.status == 200:
+                                icon_data = icon_resp.read()
+                                with open(LOCAL_ICON_FILE, "wb") as f_icon:
+                                    f_icon.write(icon_data)
+                    except Exception as e:
+                        print(f"Failed to update icon: {e}")
+                                
+                    save_local_version(remote_ver)
+                    print("Application updated successfully!")
+                    return True
                 else:
                     print("Application is up-to-date.")
     except Exception as e:
