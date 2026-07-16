@@ -1328,7 +1328,7 @@ def run_app():
             dialog.setWindowIcon(QIcon(icon_path))
             
         layout = QVBoxLayout(dialog)
-        layout.setMargins(20) # Compatibility for PySide6
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(12)
         
         title = QLabel("Activate Vishal Steno Speech Studio", dialog)
