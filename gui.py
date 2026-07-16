@@ -310,12 +310,19 @@ class VideoRenderWorker(QThread):
                 
             combined_audio = os.path.join(temp_dir, "vst_combined_audio.mp3")
             if len(audio_inputs) == 1:
-                shutil.copy(audio_inputs[0], combined_audio)
+                # Normalize speech volume to standard loudness target
+                cmd = ["ffmpeg", "-y", "-i", audio_inputs[0], "-af", "loudnorm", combined_audio]
+                subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=creationflags)
             else:
                 cmd = ["ffmpeg", "-y"]
                 for a in audio_inputs:
                     cmd.extend(["-i", a])
-                filter_str = "".join(f"[{k}:a]" for k in range(len(audio_inputs)))
+                # Normalize each audio source to balance their volume levels before concatenation
+                filter_str = ""
+                for idx in range(len(audio_inputs)):
+                    filter_str += f"[{idx}:a]loudnorm[a{idx}];"
+                for idx in range(len(audio_inputs)):
+                    filter_str += f"[a{idx}]"
                 filter_str += f"concat=n={len(audio_inputs)}:v=0:a=1[a]"
                 cmd.extend(["-filter_complex", filter_str, "-map", "[a]", combined_audio])
                 subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=creationflags)
@@ -370,12 +377,15 @@ class VideoRenderWorker(QThread):
                     cmd_stitch.extend(["-i", v])
                     
                 filter_complex_str = ""
+                # Scale each video stream to 1080p
                 for idx in range(len(video_inputs)):
                     filter_complex_str += f"[{idx}:v]scale=1920:1080,setsar=1,fps=25[v{idx}];"
-                    
+                # Normalize each video's audio track to balance their volume levels
                 for idx in range(len(video_inputs)):
-                    filter_complex_str += f"[v{idx}][{idx}:a]"
-                    
+                    filter_complex_str += f"[{idx}:a]loudnorm[a{idx}];"
+                # Concatenate scaled videos and normalized audios
+                for idx in range(len(video_inputs)):
+                    filter_complex_str += f"[v{idx}][a{idx}]"
                 filter_complex_str += f"concat=n={len(video_inputs)}:v=1:a=1[v][a]"
                 
                 cmd_stitch.extend([
