@@ -981,27 +981,33 @@ class MainWindow(QMainWindow):
         char_count = len(text)
         words = len(re.findall(r"\b\w+\b", text))
         self.stats_label.setText(f"Chars: {char_count} | Words: {words}")
-        
-        if not self.is_optimizing:
-            self.raw_text = text
-            self.current_optimization = None
 
     def optimize_script(self, punc):
-        text = self.raw_text
-        if not text.strip():
-            return
-        
+        self.current_optimization = punc
         self.is_optimizing = True
         
-        if punc == ",":
-            cleaned_text = text.replace("।", "")
-        else:
-            cleaned_text = text.replace(",", "")
+        current_text = self.text_editor.toPlainText()
+        if not current_text.strip():
+            self.is_optimizing = False
+            return
             
+        # Strip out the target punctuation we are optimizing to allow recalculation
+        cleaned_text = current_text.replace(punc, "")
+        
+        # Save cursor position so editing doesn't jump
+        cursor = self.text_editor.textCursor()
+        old_pos = cursor.position()
+        
         N = self.interval_slider.value()
         optimized = optimize_text(cleaned_text, punc, N)
         
         self.text_editor.setPlainText(optimized)
+        
+        # Restore cursor position
+        new_cursor = self.text_editor.textCursor()
+        new_cursor.setPosition(min(old_pos, len(optimized)))
+        self.text_editor.setTextCursor(new_cursor)
+        
         self.is_optimizing = False
 
     def auto_save_audio(self, temp_path):
