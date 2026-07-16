@@ -991,8 +991,8 @@ class MainWindow(QMainWindow):
             self.is_optimizing = False
             return
             
-        # Strip out the target punctuation we are optimizing to allow recalculation
-        cleaned_text = current_text.replace(punc, "")
+        # Strip out both commas and virams to ensure a clean slate
+        cleaned_text = current_text.replace(",", "").replace("।", "")
         
         # Save cursor position so editing doesn't jump
         cursor = self.text_editor.textCursor()
